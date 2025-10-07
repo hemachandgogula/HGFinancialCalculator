@@ -1,0 +1,56 @@
+{
+  "name": "hg-financial-calculator",
+  "version": "4.1.0",
+  "description": "Complete Financial Planning & Analysis Suite - A comprehensive web application with EMI, SIP, Prepayment, Retirement, and Transaction Analysis calculators",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "npx live-server",
+    "build": "echo 'No build step required - this is a static web application'",
+    "test": "echo 'Manual testing required - see README.md for testing checklist'",
+    "deploy": "echo 'Deploy using Netlify, Vercel, or GitHub Pages - see README.md for instructions'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hemachandgogula/hg-financial-calculator.git"
+  },
+  "keywords": [
+    "financial-calculator",
+    "emi-calculator",
+    "sip-calculator",
+    "investment-planner",
+    "retirement-planner",
+    "loan-calculator",
+    "prepayment-calculator",
+    "bill-splitter",
+    "expense-tracker",
+    "financial-planning",
+    "wealth-management",
+    "javascript",
+    "html5",
+    "css3",
+    "responsive-design"
+  ],
+  "author": {
+    "name": "Hemachand Gogula",
+    "email": "hemachandgogula@gmail.com",
+    "url": "https://www.linkedin.com/in/hemachandgogula/"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hemachandgogula/hg-financial-calculator/issues"
+  },
+  "homepage": "https://hemachandgogula.github.io/hg-financial-calculator",
+  "dependencies": {},
+  "devDependencies": {},
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  }
+}

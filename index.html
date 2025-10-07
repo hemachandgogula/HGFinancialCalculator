@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HG Financial Calculator - Complete Financial Planning Suite</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <meta name="description" content="Complete financial planning suite with EMI, SIP, Prepayment, Retirement, and Transaction Analysis calculators. Developed by Hemachand Gogula.">
+    <meta name="author" content="Hemachand Gogula">
+    <meta name="keywords" content="financial calculator, EMI calculator, SIP calculator, retirement planning, prepayment calculator, investment analysis">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="main-title">HG Financial Calculator</h1>
+                <p class="subtitle">Complete Financial Planning & Analysis Suite</p>
+                <div class="developer-info">
+                    <span>Developed by <strong>Hemachand Gogula</strong></span>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/hemachandgogula/" target="_blank" title="LinkedIn">💼</a>
+                        <a href="https://github.com/hemachandgogula" target="_blank" title="GitHub">👨‍💻</a>
+                        <a href="mailto:hemachandgogula@gmail.com" title="Email">📧</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-tab="emi">EMI Calculator</button>
+            <button class="tab-btn" data-tab="prepayment">Multiple Prepayments</button>
+            <button class="tab-btn" data-tab="sip">SIP & Lumpsum</button>
+            <button class="tab-btn" data-tab="swp">SWP Calculator</button>
+            <button class="tab-btn" data-tab="wealth">Wealth Calculator</button>
+            <button class="tab-btn" data-tab="bills">Bill Splitter</button>
+            <button class="tab-btn" data-tab="card-analysis">Card Analysis</button>
+        </nav>
+
+        <main class="content">
+            <!-- EMI Calculator -->
+            <section id="emi" class="tab-content active">
+                <div class="calculator-header">
+                    <h2>📊 EMI Calculator</h2>
+                    <p>Calculate your loan EMI with precision</p>
+                </div>
+                <div class="calculator-grid">
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label>Loan Amount (₹)</label>
+                            <input type="number" id="loan-amount" placeholder="e.g., 500000" oninput="calculateEMI()">
+                        </div>
+                        <div class="input-group">
+                            <label>Interest Rate (% per annum)</label>
+                            <input type="number" id="interest-rate" step="0.01" placeholder="e.g., 8.5" oninput="calculateEMI()">
+                        </div>
+                        <div class="input-group">
+                            <label>Loan Tenure (Years)</label>
+                            <input type="number" id="loan-tenure" placeholder="e.g., 20" oninput="calculateEMI()">
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-card">
+                            <h3>EMI Results</h3>
+                            <div class="result-item">
+                                <span class="label">Monthly EMI</span>
+                                <span class="value" id="emi-result">₹0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="label">Total Amount</span>
+                                <span class="value" id="total-amount">₹0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="label">Total Interest</span>
+                                <span class="value" id="total-interest">₹0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="label">Interest Percentage</span>
+                                <span class="value" id="interest-percentage">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Multiple Prepayments Calculator -->
+            <section id="prepayment" class="tab-content">
+                <div class="calculator-header">
+                    <h2>🏠 Multiple Prepayments Calculator</h2>
+                    <p>Plan multiple prepayments and see both time & EMI savings</p>
+                </div>
+                <div class="calculator-grid">
+                    <div class="input-section">
+                        <div class="loan-details">
+                            <h3>Loan Details</h3>
+                            <div class="input-group">
+                                <label>Loan Amount (₹)</label>
+                                <input type="number" id="prep-loan-amount" placeholder="e.g., 2500000" oninput="calculatePrepayments()">
+                            </div>
+                            <div class="input-group">
+                                <label>Interest Rate (% per annum)</label>
+                                <input type="number" id="prep-interest-rate" step="0.01" placeholder="e.g., 8.5" oninput="calculatePrepayments()">
+                            </div>
+                            <div class="input-group">
+                                <label>Loan Tenure (Years)</label>
+                                <input type="number" id="prep-loan-tenure" placeholder="e.g., 20" oninput="calculatePrepayments()">
+                            </div>
+                            <div class="input-group">
+                                <label>Prepayment Strategy</label>
+                                <select id="prep-strategy" onchange="calculatePrepayments()">
+                                    <option value="reduce_tenure">Reduce Tenure (Keep Same EMI)</option>
+                                    <option value="reduce_emi">Reduce EMI (Keep Same Tenure)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="prepayments-section">
+                            <h3>Prepayments <button class="add-btn" onclick="addPrepayment()">+ Add Prepayment</button></h3>
+                            <div id="prepayments-list"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-card">
+                            <h3>⏱️ Time Savings Analysis</h3>
+                            <div id="time-savings-results"></div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <h3>💰 EMI Savings Analysis</h3>
+                            <div id="emi-savings-results"></div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <h3>Year-by-Year Impact</h3>
+                            <div class="table-wrapper">
+                                <table id="prepayment-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Year</th>
+                                            <th>EMI</th>
+                                            <th>Principal</th>
+                                            <th>Interest</th>
+                                            <th>Outstanding</th>
+                                            <th>Prepayment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="prepayment-table-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced SIP & Lumpsum Calculator -->
+            <section id="sip" class="tab-content">
+                <div class="calculator-header">
+                    <h2>📈 SIP & Lumpsum Calculator</h2>
+                    <p>Groww methodology with SIP, Lumpsum, and combined options</p>
+                </div>
+                
+                <div class="investment-tabs">
+                    <button class="inv-tab-btn active" data-inv-tab="sip-only">SIP Only</button>
+                    <button class="inv-tab-btn" data-inv-tab="lumpsum-only">Lumpsum Only</button>
+                    <button class="inv-tab-btn" data-inv-tab="sip-lumpsum">SIP + Lumpsum</button>
+                </div>
+
+                <!-- SIP Only -->
+                <div id="sip-only" class="inv-tab-content active">
+                    <div class="methodology-note">
+                        <p><strong>SIP Compounding Formula (Groww):</strong> FV = P × ({[1 + i]^n – 1} / i) × (1 + i)</p>
+                        <p>Where P = Monthly investment, i = Monthly return rate, n = Number of months</p>
+                    </div>
+                    <div class="calculator-grid">
+                        <div class="input-section">
+                            <div class="input-group">
+                                <label>Monthly SIP Amount (₹)</label>
+                                <input type="number" id="sip-amount" placeholder="e.g., 10000" oninput="calculateSIP()">
+                            </div>
+                            <div class="input-group">
+                                <label>Investment Period (Years)</label>
+                                <input type="number" id="sip-period" placeholder="e.g., 15" oninput="calculateSIP()">
+                            </div>
+                            <div class="input-group">
+                                <label>Expected Annual Return (%)</label>
+                                <input type="number" id="sip-return" step="0.1" placeholder="e.g., 12" oninput="calculateSIP()">
+                            </div>
+                            <div class="input-group">
+                                <label>Annual Step-up (%)</label>
+                                <input type="number" id="sip-stepup" step="0.1" placeholder="e.g., 10" oninput="calculateSIP()">
+                            </div>
+                        </div>
+                        <div class="result-section">
+                            <div class="result-card">
+                                <h3>SIP Results</h3>
+                                <div class="result-item">
+                                    <span class="label">Total Investment</span>
+                                    <span class="value" id="sip-total-investment">₹0</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">Expected Returns</span>
+                                    <span class="value" id="sip-expected-returns">₹0</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">Maturity Value</span>
+                                    <span class="value" id="sip-maturity-value">₹0</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">Wealth Multiplier</span>
+                                    <span class="value" id="sip-multiplier">0x</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lumpsum Only -->
+                <div id="lumpsum-only" class="inv-tab-content">
+                    <div class="methodology-note">
+                        <p><strong>Lumpsum Compounding Formula:</strong> A = P (1 + r/n) ^ nt</p>
+                        <p>Where P = Principal amount, r = Annual interest rate, n = Compounding frequency, t = Time</p>
+                    </div>
+                    <div class="calculator-grid">
+                        <div class="input-section">
+                            <div class="input-group">
+                                <label>Lumpsum Amount (₹)</label>
+                                <input type="number" id="lumpsum-amount" placeholder="e.g., 100000" oninput="calculateLumpsum()">
+                            </div>
+                            <div class="input-group">
+                                <label>Investment Period (Years)</label>
+                                <input type="number" id="lumpsum-period" placeholder="e.g., 10" oninput="calculateLumpsum()">
+                            </div>
+                            <div class="input-group">
+                                <label>Expected Annual Return (%)</label>
+                                <input type="number" id="lumpsum-return" step="0.1" placeholder="e.g., 12" oninput="calculateLumpsum()">
+                            </div>
+                        </div>
+                        <div class="result-section">
+                            <div class="result-card">
+                                <h3>Lumpsum Results</h3>
+                                <div class="result-item">
+                                    <span class="label">Initial Investment</span>
+                                    <span class="value" id="lumpsum-initial">₹0</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">Maturity Value</span>
+                                    <span class="value" id="lumpsum-maturity">₹0</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">Total Returns</span>
+                                    <span class="value" id="lumpsum-returns">₹0</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">Wealth Multiplier</span>
+                                    <span class="value" id="lumpsum-multiplier">0x</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIP + Lumpsum Combined -->
+                <div id="sip-lumpsum" class="inv-tab-content">
+                    <div class="methodology-note">
+                        <p><strong>Combined Investment:</strong> SIP compounding + Lumpsum compounding calculated separately and combined</p>
+                    </div>
+                    <div class="calculator-grid">
+                        <div class="input-section">
+                            <div class="input-group">
+                                <label>Monthly SIP Amount (₹)</label>
+                                <input type="number" id="combined-sip-amount" placeholder="e.g., 5000" oninput="calculateCombined()">
+                            </div>
+                            <div class="input-group">
+                                <label>Lumpsum Amount (₹)</label>
+                                <input type="number" id="combined-lumpsum-amount" placeholder="e.g., 50000" oninput="calculateCombined()">
+                            </div>
+                            <div class="input-group">
+                                <label>Investment Period (Years)</label>
+                                <input type="number" id="combined-period" placeholder="e.g., 15" oninput="calculateCombined()">
+                            </div>
+                            <div class="input-group">
+                                <label>Expected Annual Return (%)</label>
+                                <input type="number" id="combined-return" step="0.1" placeholder="e.g., 12" oninput="calculateCombined()">
+                            </div>
+                        </div>
+                        <div class="result-section">
+                            <div class="result-card">
+                                <h3>Combined Results</h3>
+                                <div class="result-item">
+                                    <span class="label">Total Investment</span>
+                                    <span class="value" id="combined-total-investment">₹0</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">SIP Maturity Value</span>
+                                    <span class="value" id="combined-sip-value">₹0</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">Lumpsum Maturity Value</span>
+                                    <span class="value" id="combined-lumpsum-value">₹0</span>
+                                </div>
+                                <div class="result-item highlight">
+                                    <span class="label">Total Maturity Value</span>
+                                    <span class="value" id="combined-total-value">₹0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SWP Calculator -->
+            <section id="swp" class="tab-content">
+                <div class="calculator-header">
+                    <h2>📉 SWP Calculator</h2>
+                    <p>Systematic Withdrawal Plan with sustainability analysis</p>
+                </div>
+                <div class="methodology-note">
+                    <p><strong>SWP Strategy:</strong> Monthly withdrawals from invested corpus with remaining amount continuing to earn returns</p>
+                </div>
+                <div class="calculator-grid">
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label>Investment Amount (₹)</label>
+                            <input type="number" id="swp-amount" placeholder="e.g., 1000000" oninput="calculateSWP()">
+                        </div>
+                        <div class="input-group">
+                            <label>Monthly Withdrawal (₹)</label>
+                            <input type="number" id="swp-withdrawal" placeholder="e.g., 8000" oninput="calculateSWP()">
+                        </div>
+                        <div class="input-group">
+                            <label>Expected Annual Return (%)</label>
+                            <input type="number" id="swp-return" step="0.1" placeholder="e.g., 10" oninput="calculateSWP()">
+                        </div>
+                        <div class="input-group">
+                            <label>Withdrawal Period (Years)</label>
+                            <input type="number" id="swp-period" placeholder="e.g., 15" oninput="calculateSWP()">
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-card">
+                            <h3>SWP Analysis</h3>
+                            <div id="swp-results"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Wealth Calculator -->
+            <section id="wealth" class="tab-content">
+                <div class="calculator-header">
+                    <h2>💎 Wealth Calculator</h2>
+                    <p>Goal planning, retirement planning, and investment comparison tools</p>
+                </div>
+                
+                <div class="wealth-tabs">
+                    <button class="wealth-tab-btn active" data-wealth-tab="goal-planning">Goal Planning</button>
+                    <button class="wealth-tab-btn" data-wealth-tab="retirement">Retirement Planning</button>
+                    <button class="wealth-tab-btn" data-wealth-tab="comparison">Investment Comparison</button>
+                </div>
+
+                <!-- Goal Planning -->
+                <div id="goal-planning" class="wealth-tab-content active">
+                    <div class="calculator-grid">
+                        <div class="input-section">
+                            <div class="input-group">
+                                <label>Goal Amount (₹)</label>
+                                <input type="number" id="goal-amount" placeholder="e.g., 1000000" oninput="calculateGoal()">
+                            </div>
+                            <div class="input-group">
+                                <label>Time to Goal (Years)</label>
+                                <input type="number" id="goal-time" placeholder="e.g., 10" oninput="calculateGoal()">
+                            </div>
+                            <div class="input-group">
+                                <label>Expected Annual Return (%)</label>
+                                <input type="number" id="goal-return" step="0.1" placeholder="e.g., 12" oninput="calculateGoal()">
+                            </div>
+                            <div class="input-group">
+                                <label>Current Savings (₹)</label>
+                                <input type="number" id="goal-current" placeholder="e.g., 100000" oninput="calculateGoal()">
+                            </div>
+                        </div>
+                        <div class="result-section">
+                            <div class="result-card">
+                                <h3>Goal Planning Results</h3>
+                                <div id="goal-results"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Retirement Planning -->
+                <div id="retirement" class="wealth-tab-content">
+                    <div class="retirement-header">
+                        <h3>Two-Phase Retirement Planning</h3>
+                        <p>Phase 1: Build your retirement corpus | Phase 2: Verify income sustainability</p>
+                    </div>
+                    
+                    <div class="calculator-grid">
+                        <div class="input-section">
+                            <div class="input-group">
+                                <label>Current Age</label>
+                                <input type="number" id="current-age" placeholder="e.g., 30" oninput="calculateRetirement()">
+                            </div>
+                            <div class="input-group">
+                                <label>Planned Retirement Age</label>
+                                <input type="number" id="retirement-age" placeholder="e.g., 45" oninput="calculateRetirement()">
+                            </div>
+                            <div class="input-group">
+                                <label>Desired Monthly Income After Retirement (₹)</label>
+                                <input type="number" id="retirement-income" placeholder="e.g., 100000" oninput="calculateRetirement()">
+                            </div>
+                            <div class="input-group">
+                                <label>Expected Annual Return During Accumulation (%)</label>
+                                <input type="number" id="retirement-return" step="0.1" placeholder="e.g., 12" oninput="calculateRetirement()">
+                            </div>
+                            <div class="input-group">
+                                <label>Expected Monthly Return After Retirement (%)</label>
+                                <input type="number" id="retirement-monthly-return" step="0.1" placeholder="e.g., 0.5" value="0.5" oninput="calculateRetirement()">
+                                <small>Conservative return rate for post-retirement investments (e.g., 0.5% = 6% annually)</small>
+                            </div>
+                            <div class="input-group">
+                                <label>Expected Years in Retirement</label>
+                                <input type="number" id="retirement-years" placeholder="e.g., 25" value="25" oninput="calculateRetirement()">
+                            </div>
+                        </div>
+                        <div class="result-section">
+                            <div class="result-card">
+                                <h3>🎯 Phase 1: Corpus Building</h3>
+                                <div id="accumulation-results"></div>
+                            </div>
+                            
+                            <div class="result-card">
+                                <h3>🔍 Phase 2: Income Sustainability Check</h3>
+                                <div id="sustainability-results"></div>
+                            </div>
+                            
+                            <div class="result-card">
+                                <h3>💡 Retirement Recommendation</h3>
+                                <div id="retirement-recommendation"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Investment Comparison -->
+                <div id="comparison" class="wealth-tab-content">
+                    <div class="comparison-controls">
+                        <div class="input-group">
+                            <label>Investment Period (Years) - Same for All</label>
+                            <input type="number" id="comparison-years" placeholder="e.g., 10" value="10" oninput="calculateComparison()">
+                        </div>
+                        <button class="add-btn" onclick="addComparison()">+ Add Investment</button>
+                    </div>
+                    <div id="comparison-list"></div>
+                    <div class="result-section">
+                        <div class="result-card">
+                            <h3>Investment Comparison Results</h3>
+                            <div id="comparison-results"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bill Splitter -->
+            <section id="bills" class="tab-content">
+                <div class="calculator-header">
+                    <h2>💰 Bill Splitter</h2>
+                    <p>Split multiple expenses among group members with smart settlements</p>
+                </div>
+                
+                <div class="splitter-grid">
+                    <div class="members-section">
+                        <h3>Group Members</h3>
+                        <div id="members-list"></div>
+                        <button class="add-btn" onclick="addMember()">+ Add Member</button>
+                    </div>
+                    
+                    <div class="expenses-section">
+                        <h3>Expenses</h3>
+                        <div id="expenses-list"></div>
+                        <button class="add-btn" onclick="addExpense()">+ Add Expense</button>
+                    </div>
+                </div>
+                
+                <div class="result-section">
+                    <div class="result-card">
+                        <h3>Settlement Summary</h3>
+                        <div id="bill-results"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Card Analysis -->
+            <section id="card-analysis" class="tab-content">
+                <div class="calculator-header">
+                    <h2>📊 Card Analysis & Spending Tracker</h2>
+                    <p>Upload transaction data for automatic spending categorization and insights</p>
+                </div>
+                
+                <div class="upload-section-container">
+                    <div class="upload-section">
+                        <div class="upload-area" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
+                            <input type="file" id="transaction-file" accept=".csv,.txt" onchange="handleFileUpload(event)" style="display: none;">
+                            <div class="upload-content" onclick="document.getElementById('transaction-file').click()">
+                                <div class="upload-icon">📊</div>
+                                <h3>Upload Transaction File</h3>
+                                <p>Drag and drop your CSV/TXT file here or click to browse</p>
+                                <small>Supported formats: CSV, TXT with transaction data</small>
+                            </div>
+                        </div>
+                        
+                        <div class="sample-format">
+                            <h4>Expected File Format:</h4>
+                            <code>Date,Description,Amount<br>
+                            2025-01-15,"SWIGGY BANGALORE",450<br>
+                            2025-01-16,"BSNL MOBILE RECHARGE",199<br>
+                            2025-01-17,"SHELL PETROL PUMP",2500</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analysis-results" id="analysis-results" style="display: none;">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Transactions</h3>
+                            <div class="stat-value" id="total-transactions">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Spending</h3>
+                            <div class="stat-value" id="total-spending">₹0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Average Transaction</h3>
+                            <div class="stat-value" id="avg-transaction">₹0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Categories Found</h3>
+                            <div class="stat-value" id="categories-count">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="charts-section">
+                        <div class="chart-container">
+                            <h3>Spending by Category</h3>
+                            <canvas id="category-chart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Monthly Spending Trend</h3>
+                            <canvas id="trend-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="category-breakdown">
+                        <h3>Detailed Category Breakdown</h3>
+                        <div id="category-details"></div>
+                    </div>
+                    
+                    <div class="insights-section">
+                        <h3>Spending Insights</h3>
+                        <div id="spending-insights"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 HG Financial Calculator. All rights reserved.</p>
+                <p>Developed by <strong>Hemachand Gogula</strong> | 
+                   <a href="https://www.linkedin.com/in/hemachandgogula/" target="_blank">LinkedIn</a> | 
+                   <a href="https://github.com/hemachandgogula" target="_blank">GitHub</a> | 
+                   <a href="mailto:hemachandgogula@gmail.com">Email</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
