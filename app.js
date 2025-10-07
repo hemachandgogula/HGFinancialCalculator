@@ -107,7 +107,7 @@ function calculateEMI() {
     document.getElementById('emi-results').classList.remove('hidden');
 }
 
-// Enhanced Prepayment Calculator with Multiple Prepayments
+// ENHANCED Prepayment Calculator with EMI Savings Card
 function setupLoanDetails() {
     const loanAmount = parseFloat(document.getElementById('prep-loan-amount').value);
     const interestRate = parseFloat(document.getElementById('prep-interest-rate').value);
@@ -132,6 +132,7 @@ function setupLoanDetails() {
 function addPrepayment() {
     const amount = parseFloat(document.getElementById('prepayment-amount-input').value);
     const month = parseInt(document.getElementById('prepayment-month-input').value);
+    const option = document.getElementById('prepayment-option').value;
     
     if (!amount || !month) {
         alert('Please fill in prepayment details');
@@ -152,7 +153,8 @@ function addPrepayment() {
     const prepayment = {
         id: Date.now(),
         amount,
-        month
+        month,
+        option
     };
     
     prepayments.push(prepayment);
@@ -181,10 +183,12 @@ function updatePrepaymentsList() {
     
     let html = '<h4>Scheduled Prepayments:</h4>';
     prepayments.forEach(prepayment => {
+        const optionText = prepayment.option === 'reduce-emi' ? 'Reduce EMI' : 'Reduce Tenure';
         html += `
             <div class="prepayment-item">
                 <div class="prepayment-details">
                     <p><strong>Month ${prepayment.month}:</strong> ${formatCurrency(prepayment.amount)}</p>
+                    <p><strong>Option:</strong> ${optionText}</p>
                 </div>
                 <button class="remove-prepayment" onclick="removePrepayment(${prepayment.id})">Remove</button>
             </div>
@@ -216,13 +220,15 @@ function calculateMultiplePrepayments() {
     let totalPrepaymentAmount = 0;
     let month = 0;
     let schedule = [];
+    let currentEmi = originalEmi;
+    let emiReduction = 0;
     
     while (remainingBalance > 0.01 && month < numberOfPayments) {
         month++;
         
         // Calculate interest for this month
         const monthlyInterest = remainingBalance * monthlyRate;
-        const monthlyPrincipal = Math.min(originalEmi - monthlyInterest, remainingBalance);
+        const monthlyPrincipal = Math.min(currentEmi - monthlyInterest, remainingBalance);
         
         totalInterestPaid += monthlyInterest;
         remainingBalance -= monthlyPrincipal;
@@ -234,11 +240,22 @@ function calculateMultiplePrepayments() {
             remainingBalance -= actualPrepayment;
             totalPrepaymentAmount += actualPrepayment;
             
+            // Handle EMI option
+            if (prepayment.option === 'reduce-emi' && remainingBalance > 0) {
+                const remainingMonths = numberOfPayments - month;
+                const newEmi = remainingBalance * (monthlyRate * Math.pow(1 + monthlyRate, remainingMonths)) / 
+                              (Math.pow(1 + monthlyRate, remainingMonths) - 1);
+                emiReduction += (currentEmi - newEmi);
+                currentEmi = newEmi;
+            }
+            
             // Add to schedule
             schedule.push({
                 month,
                 prepayment: actualPrepayment,
-                remainingBalance
+                remainingBalance,
+                option: prepayment.option,
+                newEmi: prepayment.option === 'reduce-emi' ? currentEmi : originalEmi
             });
         }
     }
@@ -256,8 +273,22 @@ function calculateMultiplePrepayments() {
     document.getElementById('prep-new-interest').textContent = formatCurrency(totalInterestPaid);
     document.getElementById('prep-new-total').textContent = formatCurrency(newTotalAmount);
     
-    document.getElementById('interest-savings').textContent = formatCurrency(interestSavings);
+    // NEW: Display dual savings cards
     document.getElementById('time-savings').textContent = timeSaved + ' months';
+    document.getElementById('new-tenure').textContent = month + ' months';
+    document.getElementById('interest-savings').textContent = formatCurrency(interestSavings);
+    
+    // Handle EMI reduction display
+    const emiReductionInfo = document.getElementById('emi-reduction-info');
+    if (emiReduction > 0) {
+        document.getElementById('emi-reduction').textContent = formatCurrency(emiReduction);
+        emiReductionInfo.style.display = 'flex';
+        document.getElementById('emi-reduction-info').querySelector('.label').textContent = 'Total EMI Reduction:';
+    } else {
+        document.getElementById('emi-reduction').textContent = 'N/A (Reduce Tenure)';
+        emiReductionInfo.style.display = 'flex';
+        document.getElementById('emi-reduction-info').querySelector('.label').textContent = 'EMI Reduction:';
+    }
     
     // Create schedule table
     let scheduleHtml = '<h4>Prepayment Schedule</h4>';
@@ -267,7 +298,9 @@ function calculateMultiplePrepayments() {
                 <thead>
                     <tr>
                         <th>Month</th>
-                        <th>Prepayment Amount</th>
+                        <th>Prepayment</th>
+                        <th>Option</th>
+                        <th>New EMI</th>
                         <th>Remaining Balance</th>
                     </tr>
                 </thead>
@@ -275,10 +308,13 @@ function calculateMultiplePrepayments() {
         `;
         
         schedule.forEach(item => {
+            const optionText = item.option === 'reduce-emi' ? 'Reduce EMI' : 'Reduce Tenure';
             scheduleHtml += `
                 <tr>
                     <td>${item.month}</td>
                     <td>${formatCurrency(item.prepayment)}</td>
+                    <td>${optionText}</td>
+                    <td>${formatCurrency(item.newEmi)}</td>
                     <td>${formatCurrency(item.remainingBalance)}</td>
                 </tr>
             `;
@@ -465,14 +501,18 @@ function calculateGoalPlanning() {
     document.getElementById('goal-results').classList.remove('hidden');
 }
 
-// Retirement Planning Calculator
-function calculateRetirement() {
+// REDESIGNED Advanced Retirement Planning Calculator
+function calculateAdvancedRetirement() {
     const currentAge = parseFloat(document.getElementById('current-age').value);
     const retirementAge = parseFloat(document.getElementById('retirement-age').value);
-    const retirementCorpus = parseFloat(document.getElementById('retirement-corpus').value);
-    const annualReturn = parseFloat(document.getElementById('retirement-return').value);
+    const targetCorpus = parseFloat(document.getElementById('target-corpus').value);
+    const accumulationReturn = parseFloat(document.getElementById('accumulation-return').value);
+    const desiredMonthlyIncome = parseFloat(document.getElementById('desired-monthly-income').value);
+    const withdrawalReturn = parseFloat(document.getElementById('withdrawal-return').value);
+    const withdrawalDuration = parseFloat(document.getElementById('withdrawal-duration').value);
     
-    if (!currentAge || !retirementAge || !retirementCorpus || !annualReturn) {
+    if (!currentAge || !retirementAge || !targetCorpus || !accumulationReturn || 
+        !desiredMonthlyIncome || !withdrawalReturn || !withdrawalDuration) {
         alert('Please fill in all fields');
         return;
     }
@@ -483,19 +523,109 @@ function calculateRetirement() {
     }
     
     const yearsToRetirement = retirementAge - currentAge;
-    const months = yearsToRetirement * 12;
-    const monthlyReturn = Math.pow(1 + annualReturn / 100, 1/12) - 1;
     
-    // Calculate required monthly SIP
-    const requiredMonthlySIP = retirementCorpus / 
+    // PHASE 1: Accumulation Calculation
+    const months = yearsToRetirement * 12;
+    const monthlyReturn = Math.pow(1 + accumulationReturn / 100, 1/12) - 1;
+    
+    // Calculate required monthly SIP for target corpus
+    const requiredMonthlySIP = targetCorpus / 
         (((Math.pow(1 + monthlyReturn, months) - 1) / monthlyReturn) * (1 + monthlyReturn));
     
     const totalInvestment = requiredMonthlySIP * months;
     
-    // Display results
+    // PHASE 2: Withdrawal Phase Analysis
+    const withdrawalMonths = withdrawalDuration * 12;
+    const monthlyWithdrawalReturn = Math.pow(1 + withdrawalReturn / 100, 1/12) - 1;
+    
+    // Calculate sustainable monthly income from corpus
+    let corpus = targetCorpus;
+    let totalWithdrawn = 0;
+    let monthsCompleted = 0;
+    let canSustain = true;
+    
+    // Simulate withdrawal for the entire duration
+    for (let month = 1; month <= withdrawalMonths; month++) {
+        // Apply monthly return
+        corpus = corpus * (1 + monthlyWithdrawalReturn);
+        
+        // Check if desired withdrawal is possible
+        if (corpus >= desiredMonthlyIncome) {
+            corpus -= desiredMonthlyIncome;
+            totalWithdrawn += desiredMonthlyIncome;
+            monthsCompleted++;
+        } else {
+            canSustain = false;
+            break;
+        }
+    }
+    
+    // Calculate what the corpus can actually provide
+    let sustainableIncome = 0;
+    if (canSustain) {
+        sustainableIncome = desiredMonthlyIncome;
+    } else {
+        // Calculate maximum sustainable income
+        let testCorpus = targetCorpus;
+        sustainableIncome = (testCorpus * monthlyWithdrawalReturn) / 
+                           (1 - Math.pow(1 + monthlyWithdrawalReturn, -withdrawalMonths));
+    }
+    
+    // Display Phase 1 Results
     document.getElementById('years-to-retirement').textContent = yearsToRetirement + ' years';
     document.getElementById('retirement-monthly-sip').textContent = formatCurrency(requiredMonthlySIP);
     document.getElementById('retirement-total-investment').textContent = formatCurrency(totalInvestment);
+    document.getElementById('final-corpus').textContent = formatCurrency(targetCorpus);
+    
+    // Display Phase 2 Results
+    document.getElementById('target-monthly-income').textContent = formatCurrency(desiredMonthlyIncome);
+    document.getElementById('sustainable-monthly-income').textContent = formatCurrency(sustainableIncome);
+    document.getElementById('income-duration').textContent = withdrawalDuration + ' years';
+    document.getElementById('remaining-corpus').textContent = formatCurrency(corpus);
+    
+    // Sufficiency Analysis
+    const sufficiencyResult = document.getElementById('sufficiency-result');
+    const sufficiencyTitle = document.getElementById('sufficiency-title');
+    const sufficiencyMessage = document.getElementById('sufficiency-message');
+    const recommendations = document.getElementById('sufficiency-recommendations');
+    
+    if (canSustain && sustainableIncome >= desiredMonthlyIncome) {
+        // Sufficient
+        sufficiencyTitle.textContent = '✅ Plan is Sufficient!';
+        sufficiencyMessage.textContent = `Great news! Your target corpus of ${formatCurrency(targetCorpus)} can comfortably provide ${formatCurrency(desiredMonthlyIncome)} monthly for ${withdrawalDuration} years.`;
+        sufficiencyMessage.className = 'sufficiency-message sufficient';
+        
+        recommendations.innerHTML = `
+            <h5>💡 Recommendations:</h5>
+            <ul>
+                <li>Start your SIP of ${formatCurrency(requiredMonthlySIP)} today</li>
+                <li>Review and increase SIP annually with income growth</li>
+                <li>Consider additional investments if income allows</li>
+                <li>Monitor market performance and adjust strategy if needed</li>
+            </ul>
+        `;
+    } else {
+        // Insufficient
+        const shortage = desiredMonthlyIncome - sustainableIncome;
+        const additionalCorpusNeeded = (desiredMonthlyIncome * withdrawalMonths) / 
+                                      (1 - Math.pow(1 + monthlyWithdrawalReturn, -withdrawalMonths));
+        const additionalSIPNeeded = (additionalCorpusNeeded - targetCorpus) / 
+                                   (((Math.pow(1 + monthlyReturn, months) - 1) / monthlyReturn) * (1 + monthlyReturn));
+        
+        sufficiencyTitle.textContent = '⚠️ Plan Needs Improvement';
+        sufficiencyMessage.textContent = `Your corpus can only provide ${formatCurrency(sustainableIncome)} monthly. You'll be short by ${formatCurrency(shortage)} per month.`;
+        sufficiencyMessage.className = 'sufficiency-message insufficient';
+        
+        recommendations.innerHTML = `
+            <h5>💡 Recommendations to Bridge the Gap:</h5>
+            <ul>
+                <li><strong>Option 1:</strong> Increase target corpus to ${formatCurrency(additionalCorpusNeeded)} (requires ${formatCurrency(requiredMonthlySIP + additionalSIPNeeded)} monthly SIP)</li>
+                <li><strong>Option 2:</strong> Extend retirement age by ${Math.ceil(shortage * 12 / desiredMonthlyIncome)} years</li>
+                <li><strong>Option 3:</strong> Accept ${formatCurrency(sustainableIncome)} monthly income</li>
+                <li><strong>Option 4:</strong> Increase expected withdrawal returns to ${(withdrawalReturn + 1).toFixed(1)}% or higher</li>
+            </ul>
+        `;
+    }
     
     document.getElementById('retirement-results').classList.remove('hidden');
 }

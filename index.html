@@ -99,6 +99,13 @@
                             <label for="prepayment-month-input">After Month</label>
                             <input type="number" id="prepayment-month-input" placeholder="e.g., 12">
                         </div>
+                        <div class="input-group">
+                            <label for="prepayment-option">Prepayment Option</label>
+                            <select id="prepayment-option">
+                                <option value="reduce-tenure">Reduce Tenure</option>
+                                <option value="reduce-emi">Reduce EMI</option>
+                            </select>
+                        </div>
                         <button class="btn btn--secondary" onclick="addPrepayment()">Add Prepayment</button>
                     </div>
                     
@@ -141,16 +148,33 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="savings-summary">
-                            <div class="result-item highlight">
-                                <span class="label">Total Interest Savings:</span>
-                                <span class="value" id="interest-savings">₹0</span>
+                        
+                        <!-- NEW: Dual Savings Cards -->
+                        <div class="savings-cards-grid">
+                            <div class="savings-card">
+                                <h4>⏰ Time Saved</h4>
+                                <div class="result-item highlight">
+                                    <span class="label">Time Saved:</span>
+                                    <span class="value" id="time-savings">0 months</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">New Tenure:</span>
+                                    <span class="value" id="new-tenure">0 months</span>
+                                </div>
                             </div>
-                            <div class="result-item highlight">
-                                <span class="label">Time Saved:</span>
-                                <span class="value" id="time-savings">0 months</span>
+                            <div class="savings-card">
+                                <h4>💰 EMI Savings</h4>
+                                <div class="result-item highlight">
+                                    <span class="label">Interest Savings:</span>
+                                    <span class="value" id="interest-savings">₹0</span>
+                                </div>
+                                <div class="result-item" id="emi-reduction-info">
+                                    <span class="label">EMI Reduction:</span>
+                                    <span class="value" id="emi-reduction">₹0</span>
+                                </div>
                             </div>
                         </div>
+                        
                         <div id="prepayment-schedule" class="schedule-table"></div>
                     </div>
                 </div>
@@ -405,42 +429,112 @@
                     </div>
                 </div>
 
-                <!-- Retirement Planning -->
+                <!-- REDESIGNED Retirement Planning -->
                 <div id="retirement" class="wealth-tab-content">
-                    <h3>Retirement Planning</h3>
-                    <div class="input-section">
-                        <div class="input-group">
-                            <label for="current-age">Current Age</label>
-                            <input type="number" id="current-age" placeholder="e.g., 30">
-                        </div>
-                        <div class="input-group">
-                            <label for="retirement-age">Retirement Age</label>
-                            <input type="number" id="retirement-age" placeholder="e.g., 60">
-                        </div>
-                        <div class="input-group">
-                            <label for="retirement-corpus">Desired Retirement Corpus (₹)</label>
-                            <input type="number" id="retirement-corpus" placeholder="e.g., 50000000">
-                        </div>
-                        <div class="input-group">
-                            <label for="retirement-return">Expected Annual Return (%)</label>
-                            <input type="number" id="retirement-return" step="0.01" placeholder="e.g., 12">
-                        </div>
-                        <button class="btn btn--primary" onclick="calculateRetirement()">Calculate Retirement Plan</button>
+                    <h3>🏖️ Retirement Planning - Two Phase Analysis</h3>
+                    <div class="methodology-note">
+                        <p><strong>Smart Retirement Planning:</strong> Calculate corpus building + verify monthly income sufficiency. Example: ₹1 Lakh monthly needs ₹2 Crores at 6% annual return.</p>
                     </div>
+                    
+                    <div class="retirement-phases">
+                        <div class="phase-section">
+                            <h4>📊 Phase 1: Accumulation (Corpus Building)</h4>
+                            <div class="input-section">
+                                <div class="input-group">
+                                    <label for="current-age">Current Age</label>
+                                    <input type="number" id="current-age" placeholder="e.g., 30">
+                                </div>
+                                <div class="input-group">
+                                    <label for="retirement-age">Retirement Age</label>
+                                    <input type="number" id="retirement-age" placeholder="e.g., 45">
+                                </div>
+                                <div class="input-group">
+                                    <label for="target-corpus">Target Retirement Corpus (₹)</label>
+                                    <input type="number" id="target-corpus" placeholder="e.g., 20000000">
+                                </div>
+                                <div class="input-group">
+                                    <label for="accumulation-return">Expected Annual Return (Accumulation) %</label>
+                                    <input type="number" id="accumulation-return" step="0.01" placeholder="e.g., 12">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="phase-section">
+                            <h4>💰 Phase 2: Withdrawal (Income Verification)</h4>
+                            <div class="input-section">
+                                <div class="input-group">
+                                    <label for="desired-monthly-income">Desired Monthly Income (₹)</label>
+                                    <input type="number" id="desired-monthly-income" placeholder="e.g., 100000">
+                                </div>
+                                <div class="input-group">
+                                    <label for="withdrawal-return">Expected Annual Return (Withdrawal) %</label>
+                                    <input type="number" id="withdrawal-return" step="0.01" placeholder="e.g., 6">
+                                </div>
+                                <div class="input-group">
+                                    <label for="withdrawal-duration">Income Duration (Years)</label>
+                                    <input type="number" id="withdrawal-duration" placeholder="e.g., 25">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn--primary" onclick="calculateAdvancedRetirement()">Calculate Complete Retirement Plan</button>
+                    
                     <div id="retirement-results" class="results-section hidden">
                         <div class="result-card">
-                            <h3>Retirement Planning Results</h3>
-                            <div class="result-item">
-                                <span class="label">Years to Retirement:</span>
-                                <span class="value" id="years-to-retirement">0</span>
+                            <h3>🎯 Complete Retirement Analysis</h3>
+                            
+                            <!-- Phase 1 Results -->
+                            <div class="retirement-phase-results">
+                                <div class="phase-result-card">
+                                    <h4>📊 Phase 1: Accumulation Results</h4>
+                                    <div class="result-item">
+                                        <span class="label">Years to Build Corpus:</span>
+                                        <span class="value" id="years-to-retirement">0 years</span>
+                                    </div>
+                                    <div class="result-item highlight">
+                                        <span class="label">Required Monthly SIP:</span>
+                                        <span class="value" id="retirement-monthly-sip">₹0</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">Total SIP Investment:</span>
+                                        <span class="value" id="retirement-total-investment">₹0</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">Target Corpus:</span>
+                                        <span class="value" id="final-corpus">₹0</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Phase 2 Results -->
+                                <div class="phase-result-card">
+                                    <h4>💰 Phase 2: Income Sufficiency Check</h4>
+                                    <div class="result-item">
+                                        <span class="label">Desired Monthly Income:</span>
+                                        <span class="value" id="target-monthly-income">₹0</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">Corpus Can Provide:</span>
+                                        <span class="value" id="sustainable-monthly-income">₹0</span>
+                                    </div>
+                                    <div class="result-item highlight">
+                                        <span class="label">Income Duration:</span>
+                                        <span class="value" id="income-duration">0 years</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">Remaining Balance:</span>
+                                        <span class="value" id="remaining-corpus">₹0</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="result-item highlight">
-                                <span class="label">Required Monthly SIP:</span>
-                                <span class="value" id="retirement-monthly-sip">₹0</span>
-                            </div>
-                            <div class="result-item">
-                                <span class="label">Total Investment:</span>
-                                <span class="value" id="retirement-total-investment">₹0</span>
+                            
+                            <!-- Sufficiency Analysis -->
+                            <div class="sufficiency-analysis">
+                                <div id="sufficiency-result" class="sufficiency-card">
+                                    <h4 id="sufficiency-title">📊 Sufficiency Analysis</h4>
+                                    <div id="sufficiency-message" class="sufficiency-message"></div>
+                                    <div id="sufficiency-recommendations" class="recommendations"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -521,7 +615,7 @@
             </div>
         </div>
 
-        <!-- New Card Analysis Tab -->
+        <!-- FIXED Card Analysis Tab -->
         <div id="card-analysis" class="tab-content">
             <div class="calculator-container">
                 <h2>Card Transaction Analysis</h2>
@@ -529,18 +623,34 @@
                     <p><strong>Upload your transaction history:</strong> Support for CSV format with columns: Date, Description, Amount. We'll automatically categorize your spending.</p>
                 </div>
                 
-                <div class="input-section">
-                    <div class="input-group">
-                        <label for="transaction-file">Upload Transaction File (CSV)</label>
-                        <input type="file" id="transaction-file" accept=".csv" onchange="handleFileUpload(event)">
+                <div class="file-upload-section">
+                    <div class="upload-container">
+                        <div class="input-group">
+                            <label for="transaction-file">Upload Transaction File (CSV)</label>
+                            <input type="file" id="transaction-file" accept=".csv" onchange="handleFileUpload(event)">
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label>Or manually add transactions:</label>
-                        <div class="manual-transaction-inputs">
-                            <input type="date" id="transaction-date" placeholder="Date">
-                            <input type="text" id="transaction-description" placeholder="Description">
-                            <input type="number" id="transaction-amount" placeholder="Amount">
-                            <button class="btn btn--secondary" onclick="addManualTransaction()">Add Transaction</button>
+                    
+                    <div class="manual-input-section">
+                        <div class="input-group">
+                            <label>Or manually add transactions:</label>
+                        </div>
+                        <div class="manual-transaction-form">
+                            <div class="manual-input-group">
+                                <label for="transaction-date">Date</label>
+                                <input type="date" id="transaction-date">
+                            </div>
+                            <div class="manual-input-group">
+                                <label for="transaction-description">Description</label>
+                                <input type="text" id="transaction-description" placeholder="Transaction description">
+                            </div>
+                            <div class="manual-input-group">
+                                <label for="transaction-amount">Amount (₹)</label>
+                                <input type="number" id="transaction-amount" placeholder="0">
+                            </div>
+                            <div class="manual-input-group">
+                                <button class="btn btn--secondary" onclick="addManualTransaction()">Add Transaction</button>
+                            </div>
                         </div>
                     </div>
                 </div>

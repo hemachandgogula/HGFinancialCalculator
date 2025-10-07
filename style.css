@@ -917,16 +917,58 @@ body {
   padding: var(--space-8);
 }
 
-/* Manual Transaction Inputs */
-.manual-transaction-inputs {
+/* FIXED: Card Analysis Upload Section */
+.file-upload-section {
+  margin-bottom: var(--space-24);
+}
+
+.upload-container {
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  margin-bottom: var(--space-16);
+}
+
+.manual-input-section {
+  background: rgba(255, 165, 0, 0.05);
+  border: 1px solid var(--secondary-gold);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+}
+
+.manual-transaction-form {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr auto;
-  gap: var(--space-8);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-12);
   align-items: end;
 }
 
-.manual-transaction-inputs input {
-  margin: 0;
+.manual-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.manual-input-group label {
+  color: var(--text-gold);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-xs);
+}
+
+.manual-input-group input {
+  background: var(--premium-black);
+  color: var(--text-gold);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-sm);
+  padding: var(--space-8);
+  font-size: var(--font-size-sm);
+}
+
+.manual-input-group button {
+  margin-top: var(--space-4);
+  padding: var(--space-8) var(--space-12);
+  font-size: var(--font-size-sm);
 }
 
 /* Buttons */
@@ -1042,6 +1084,41 @@ body {
   margin-top: var(--space-16);
 }
 
+/* NEW: Prepayment Savings Cards Grid */
+.savings-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-20);
+  margin: var(--space-20) 0;
+}
+
+.savings-card {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.05) 100%);
+  border: 2px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20);
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
+  text-align: center;
+}
+
+.savings-card h4 {
+  color: var(--primary-gold);
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-16);
+  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+}
+
+.savings-card .result-item {
+  border-bottom: 1px solid rgba(218, 165, 32, 0.3);
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-8);
+}
+
+.savings-card .result-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
 /* Methodology Notes */
 .methodology-note {
   background: rgba(255, 165, 0, 0.1);
@@ -1107,6 +1184,110 @@ body {
 
 .wealth-tab-content.active, .sip-tab-content.active {
   display: block;
+}
+
+/* NEW: Retirement Planning Styles */
+.retirement-phases {
+  margin-bottom: var(--space-24);
+}
+
+.phase-section {
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20);
+  margin-bottom: var(--space-20);
+}
+
+.phase-section h4 {
+  color: var(--primary-gold);
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-16);
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+}
+
+.retirement-phase-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: var(--space-24);
+  margin-bottom: var(--space-24);
+}
+
+.phase-result-card {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(255, 165, 0, 0.05) 100%);
+  border: 2px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20);
+}
+
+.phase-result-card h4 {
+  color: var(--secondary-gold);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-16);
+  text-align: center;
+}
+
+.sufficiency-analysis {
+  margin-top: var(--space-24);
+}
+
+.sufficiency-card {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.05) 100%);
+  border: 2px solid var(--primary-gold);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  text-align: center;
+}
+
+.sufficiency-card h4 {
+  color: var(--primary-gold);
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-16);
+  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+}
+
+.sufficiency-message {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-16);
+  padding: var(--space-16);
+  border-radius: var(--radius-base);
+}
+
+.sufficiency-message.sufficient {
+  background: rgba(40, 167, 69, 0.1);
+  border: 1px solid rgba(40, 167, 69, 0.3);
+  color: #28a745;
+}
+
+.sufficiency-message.insufficient {
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #dc3545;
+}
+
+.recommendations {
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  margin-top: var(--space-16);
+}
+
+.recommendations h5 {
+  color: var(--primary-gold);
+  margin-bottom: var(--space-12);
+}
+
+.recommendations ul {
+  text-align: left;
+  color: var(--text-gold);
+  margin: 0;
+  padding-left: var(--space-20);
+}
+
+.recommendations li {
+  margin-bottom: var(--space-8);
 }
 
 /* Prepayment Styles */
@@ -1496,7 +1677,7 @@ body {
     gap: var(--space-12);
   }
   
-  .comparison-grid {
+  .comparison-grid, .savings-cards-grid, .retirement-phase-results {
     grid-template-columns: 1fr;
   }
   
@@ -1513,13 +1694,21 @@ body {
     padding: var(--space-16);
   }
   
-  .manual-transaction-inputs {
+  .manual-transaction-form {
     grid-template-columns: 1fr;
     gap: var(--space-8);
   }
   
   .chart-container {
     height: 300px !important;
+  }
+  
+  .phase-section {
+    padding: var(--space-16);
+  }
+  
+  .phase-result-card {
+    padding: var(--space-16);
   }
 }
 
@@ -1544,5 +1733,13 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-8);
+  }
+  
+  .savings-card {
+    padding: var(--space-16);
+  }
+  
+  .sufficiency-card {
+    padding: var(--space-16);
   }
 }
