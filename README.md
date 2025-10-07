@@ -50,7 +50,7 @@ A comprehensive financial calculator web application that provides all essential
 
 ## 🚀 Live Demo
 
-**[Try HG Financial Calculator](https://hemachandgogula.github.io/hg-financial-calculator)**
+**[Try HG Financial Calculator](https://hgfinancecalculator.netlify.app/)**
 
 ## 🛠️ Tech Stack
 
